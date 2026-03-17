@@ -6,9 +6,9 @@
 <title>Tank Quiz – 60 Танка</title>
 <style>
 body { font-family: Arial, sans-serif; background: #111; color: #fff; text-align: center; padding: 20px; }
-.quiz { max-width: 800px; margin: auto; background: #222; padding: 20px; border-radius: 12px; }
-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; }
-button { padding: 15px 25px; margin: 8px; border: none; border-radius: 8px; background: #444; color: #fff; cursor: pointer; font-size: 16px; }
+.quiz { max-width: 900px; margin: auto; background: #222; padding: 20px; border-radius: 12px; }
+img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
+button { padding: 15px 25px; margin: 8px; border: none; border-radius: 8px; background: #444; color: #fff; cursor: pointer; font-size: 16px; transition: 0.3s; }
 button:hover { background: #00bfff; }
 #result { margin-top: 20px; font-size: 24px; }
 </style>
@@ -28,11 +28,13 @@ button:hover { background: #00bfff; }
 </div>
 
 <script>
-// Обект със 60 танка с имена и снимки (Wikimedia Commons)
+// -----------------------------
+// 60 танка с реални Wikimedia снимки
+// -----------------------------
 const quizData = [
   {name:"M1 Abrams", img:"https://upload.wikimedia.org/wikipedia/commons/6/6f/M1A2_Abrams_US_Army.jpg"},
   {name:"T-34", img:"https://upload.wikimedia.org/wikipedia/commons/4/49/T34-85-River_Forth.jpg"},
-  {name:"T-54/55", img:"https://github.com/darknight-rp/quizza/blob/main/T-55_4.jpg?raw=true"},
+  {name:"T-54/55", img:"https://upload.wikimedia.org/wikipedia/commons/d/df/T-55AM_tank_2.jpg"},
   {name:"Tiger I", img:"https://upload.wikimedia.org/wikipedia/commons/3/30/Bundesarchiv_Bild_101I-298-1385-32A%2C_Panzer_VI_%22Tiger%22.jpg"},
   {name:"Panther", img:"https://upload.wikimedia.org/wikipedia/commons/2/2b/Panzer_V_Panther.jpg"},
   {name:"Sherman M4", img:"https://upload.wikimedia.org/wikipedia/commons/a/ac/M4_Sherman.jpg"},
@@ -84,7 +86,9 @@ const quizData = [
   {name:"Object 212", img:"https://upload.wikimedia.org/wikipedia/commons/4/42/Object_212_tank.jpg"}
 ];
 
-// shuffle helper
+// -----------------------------
+// quiz логика
+// -----------------------------
 function shuffle(a) { return a.sort(() => Math.random() - 0.5); }
 
 let current = 0, score = 0;
@@ -96,12 +100,13 @@ function loadQuestion() {
     document.getElementById("result").innerText = `Край! Твоят резултат: ${score} / ${quizData.length}`;
     return;
   }
+
   const q = quizData[current];
   document.getElementById("tankImg").src = q.img;
 
   let options = [q.name];
   while (options.length < 4) {
-    let pick = quizData[Math.floor(Math.random()*quizData.length)].name;
+    let pick = quizData[Math.floor(Math.random() * quizData.length)].name;
     if (!options.includes(pick)) options.push(pick);
   }
   shuffle(options);
