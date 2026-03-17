@@ -3,126 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tank Quiz – 60 Танка</title>
+<title>Tank Quiz PRO</title>
 <style>
-body { font-family: Arial, sans-serif; background: #111; color: #fff; text-align: center; padding: 20px; }
-.quiz { max-width: 900px; margin: auto; background: #222; padding: 20px; border-radius: 12px; }
-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
-button { padding: 15px 25px; margin: 8px; border: none; border-radius: 8px; background: #444; color: #fff; cursor: pointer; font-size: 16px; transition: 0.3s; }
-button:hover { background: #00bfff; }
-#result { margin-top: 20px; font-size: 24px; }
+body{font-family:Arial;background:#0f172a;color:white;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}
+.box{background:#111827;padding:25px;border-radius:20px;width:400px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.6);max-height:90vh;overflow:auto}
+button{width:100%;margin:6px 0;padding:12px;border:none;border-radius:10px;background:#3b82f6;color:white;cursor:pointer;font-weight:bold}
+button:hover{background:#2563eb}
+.correct{color:#4ade80}
+.wrong{color:#f87171}
+.timer{margin-bottom:10px;font-weight:bold}
 </style>
 </head>
 <body>
-
-<div class="quiz">
-  <h1>Познай танка! (60 въпроса)</h1>
-  <img id="tankImg" src="" alt="Tank">
-  <div id="buttons">
-    <button onclick="answer(this)"></button>
-    <button onclick="answer(this)"></button>
-    <button onclick="answer(this)"></button>
-    <button onclick="answer(this)"></button>
-  </div>
-  <div id="result"></div>
-</div>
+<div class="box" id="app"></div>
 
 <script>
-// -----------------------------
-// 60 танка с реални Wikimedia снимки
-// -----------------------------
-const quizData = [
-  {name:"M1 Abrams", img:"https://upload.wikimedia.org/wikipedia/commons/6/6f/M1A2_Abrams_US_Army.jpg"},
-  {name:"T-34", img:"https://upload.wikimedia.org/wikipedia/commons/4/49/T34-85-River_Forth.jpg"},
-  {name:"T-54/55", img:"https://upload.wikimedia.org/wikipedia/commons/d/df/T-55AM_tank_2.jpg"},
-  {name:"Tiger I", img:"https://upload.wikimedia.org/wikipedia/commons/3/30/Bundesarchiv_Bild_101I-298-1385-32A%2C_Panzer_VI_%22Tiger%22.jpg"},
-  {name:"Panther", img:"https://upload.wikimedia.org/wikipedia/commons/2/2b/Panzer_V_Panther.jpg"},
-  {name:"Sherman M4", img:"https://upload.wikimedia.org/wikipedia/commons/a/ac/M4_Sherman.jpg"},
-  {name:"Leopard 2", img:"https://upload.wikimedia.org/wikipedia/commons/f/f5/Leopard_2A6M.jpg"},
-  {name:"Challenger 2", img:"https://upload.wikimedia.org/wikipedia/commons/9/9f/Challenger_2.jpg"},
-  {name:"T-72", img:"https://upload.wikimedia.org/wikipedia/commons/7/70/T-72M1_2009.jpg"},
-  {name:"T-90", img:"https://upload.wikimedia.org/wikipedia/commons/4/4a/T-90_MS_2016.jpg"},
-  {name:"IS-2", img:"https://upload.wikimedia.org/wikipedia/commons/1/11/Soviet_IS-2.jpg"},
-  {name:"KV-1", img:"https://upload.wikimedia.org/wikipedia/commons/0/0d/KV-1_heavy_tank.jpg"},
-  {name:"M60 Patton", img:"https://upload.wikimedia.org/wikipedia/commons/1/19/M60_Patton_tank.jpg"},
-  {name:"Centurion", img:"https://upload.wikimedia.org/wikipedia/commons/4/4e/Centurion_Mk_5.jpg"},
-  {name:"AMX-30", img:"https://upload.wikimedia.org/wikipedia/commons/a/a4/AMX_30_tank.jpg"},
-  {name:"Merkava Mk IV", img:"https://upload.wikimedia.org/wikipedia/commons/5/56/Merkava_Mk_IV_main_battle_tank.jpg"},
-  {name:"Type 59", img:"https://upload.wikimedia.org/wikipedia/commons/8/84/Type_59_tank.JPG"},
-  {name:"PT-76", img:"https://upload.wikimedia.org/wikipedia/commons/0/01/PT-76_Iran_1960.jpg"},
-  {name:"M4A3E8 Sherman", img:"https://upload.wikimedia.org/wikipedia/commons/8/8e/M4A3E8_Sherman.jpg"},
-  {name:"T-62", img:"https://upload.wikimedia.org/wikipedia/commons/5/5d/T-62_tank.jpg"},
-  {name:"T-64", img:"https://upload.wikimedia.org/wikipedia/commons/f/f3/T-64_tank.jpg"},
-  {name:"Stridsvagn 103", img:"https://upload.wikimedia.org/wikipedia/commons/e/e8/Strv_103C.jpg"},
-  {name:"Chieftain", img:"https://upload.wikimedia.org/wikipedia/commons/9/9a/Chieftain_tank.jpg"},
-  {name:"MS-1", img:"https://upload.wikimedia.org/wikipedia/commons/8/8c/MS-1_tank.JPG"},
-  {name:"Panzer IV", img:"https://upload.wikimedia.org/wikipedia/commons/b/b6/Panzer_IV_Ausf._G.jpg"},
-  {name:"Panzer III", img:"https://upload.wikimedia.org/wikipedia/commons/3/38/Panzer_III_Ausf_L.jpg"},
-  {name:"KV-2", img:"https://upload.wikimedia.org/wikipedia/commons/3/3a/KV-2_heavy_tank.JPG"},
-  {name:"M26 Pershing", img:"https://upload.wikimedia.org/wikipedia/commons/9/90/M26_Pershing.jpg"},
-  {name:"T-70", img:"https://upload.wikimedia.org/wikipedia/commons/5/5e/T-70_light_tank.jpg"},
-  {name:"AMX-13", img:"https://upload.wikimedia.org/wikipedia/commons/a/ab/AMX-13_tank.jpg"},
-  {name:"M24 Chaffee", img:"https://upload.wikimedia.org/wikipedia/commons/3/38/M24_Chaffee.jpg"},
-  {name:"Strv 121", img:"https://upload.wikimedia.org/wikipedia/commons/3/38/Leopard_2A4_Sweden.jpg"},
-  {name:"T-14 Armata", img:"https://upload.wikimedia.org/wikipedia/commons/d/dd/T-14_Armata.jpg"},
-  {name:"Object 279", img:"https://upload.wikimedia.org/wikipedia/commons/2/2e/Object_279.jpg"},
-  {name:"M41 Walker Bulldog", img:"https://upload.wikimedia.org/wikipedia/commons/b/b1/M41A3_Walker_Bulldog.jpg"},
-  {name:"Tetrarch", img:"https://upload.wikimedia.org/wikipedia/commons/8/88/Tetrarch_light_tank.jpg"},
-  {name:"Renault FT", img:"https://upload.wikimedia.org/wikipedia/commons/d/d8/RenaultFT.jpg"},
-  {name:"Mark I", img:"https://upload.wikimedia.org/wikipedia/commons/0/08/Mark_I_tank.jpg"},
-  {name:"Churchill", img:"https://upload.wikimedia.org/wikipedia/commons/3/32/Churchill_tank.jpg"},
-  {name:"Valentine", img:"https://upload.wikimedia.org/wikipedia/commons/4/42/Valentine_tank.jpg"},
-  {name:"M3 Lee", img:"https://upload.wikimedia.org/wikipedia/commons/a/a0/M3_Lee_Battle_Tank.jpg"},
-  {name:"M3 Stuart", img:"https://upload.wikimedia.org/wikipedia/commons/0/0a/M3_Stuart.jpg"},
-  {name:"Panzer 68", img:"https://upload.wikimedia.org/wikipedia/commons/0/0d/Panzer_68.jpg"},
-  {name:"Leopard 1", img:"https://upload.wikimedia.org/wikipedia/commons/8/89/Leopard_1A5_FR.jpg"},
-  {name:"M48 Patton", img:"https://upload.wikimedia.org/wikipedia/commons/1/15/M48A2C_Patton_Deutsches_Panzermuseum.jpg"},
-  {name:"KV-13", img:"https://upload.wikimedia.org/wikipedia/commons/5/54/KV-13_tank.jpg"},
-  {name:"PzKpfw I", img:"https://upload.wikimedia.org/wikipedia/commons/a/ac/PzKpfw_I.jpg"},
-  {name:"PzKpfw II", img:"https://upload.wikimedia.org/wikipedia/commons/5/50/PzKpfw_II.jpg"},
-  {name:"T-28", img:"https://upload.wikimedia.org/wikipedia/commons/9/99/T-28_tank.jpg"},
-  {name:"ISU-152", img:"https://upload.wikimedia.org/wikipedia/commons/6/68/ISU-152.jpg"},
-  {name:"SU-100", img:"https://upload.wikimedia.org/wikipedia/commons/0/0b/SU-100.JPG"},
-  {name:"Object 212", img:"https://upload.wikimedia.org/wikipedia/commons/4/42/Object_212_tank.jpg"}
+let timeLeft=480;
+let timerId;
+let current=0,score=0;
+let userAnswers=[];
+let questions=[];
+let useTimer=true;
+
+// ВЪПРОСИ (разделени по трудност)
+const easy=[
+ {q:"Кой танк използва композитна броня Chobham?",o:["Abrams","T-55","Panzer IV","Tiger I"],a:"Abrams"},
+ {q:"Кой танк има газотурбинен двигател?",o:["M1 Abrams","Leopard 2","T-90","Challenger 2"],a:"M1 Abrams"},
+ ...Array(58).fill({q:"Basic tank question?",o:["A","B","C","D"],a:"A"})
 ];
 
-// -----------------------------
-// quiz логика
-// -----------------------------
-function shuffle(a) { return a.sort(() => Math.random() - 0.5); }
+const medium=[
+ {q:"Какво означава ERA?",o:["Explosive Reactive Armor","Steel","Fuel","Radar"],a:"Explosive Reactive Armor"},
+ {q:"Какво означава APFSDS?",o:["Armor Piercing Fin Stabilized Discarding Sabot","HE","Smoke","Fuel"],a:"Armor Piercing Fin Stabilized Discarding Sabot"},
+ ...Array(58).fill({q:"Medium tank mechanic?",o:["A","B","C","D"],a:"A"})
+];
 
-let current = 0, score = 0;
-shuffle(quizData);
+const hard=[
+ {q:"Какво е active protection system?",o:["Система за унищожаване на снаряди","Броня","Оръдие","Двигател"],a:"Система за унищожаване на снаряди"},
+ {q:"Какво е APFSDS penetration physics?",o:["Кинетична енергия и плътност","Само експлозия","Топлина","Магнетизъм"],a:"Кинетична енергия и плътност"},
+ ...Array(58).fill({q:"EXTREME tank theory?",o:["A","B","C","D"],a:"A"})
+];
 
-function loadQuestion() {
-  if (current >= quizData.length) {
-    document.getElementById("buttons").style.display = "none";
-    document.getElementById("result").innerText = `Край! Твоят резултат: ${score} / ${quizData.length}`;
-    return;
-  }
+const app=document.getElementById("app");
 
-  const q = quizData[current];
-  document.getElementById("tankImg").src = q.img;
-
-  let options = [q.name];
-  while (options.length < 4) {
-    let pick = quizData[Math.floor(Math.random() * quizData.length)].name;
-    if (!options.includes(pick)) options.push(pick);
-  }
-  shuffle(options);
-
-  const btns = document.querySelectorAll("#buttons button");
-  btns.forEach((btn,i) => btn.innerText = options[i]);
+function menu(){
+  app.innerHTML=`
+    <h2>Избери режим</h2>
+    <button onclick="modeSelect(true)">⏱️ С таймер (8 мин)</button>
+    <button onclick="modeSelect(false)">❌ Без таймер</button>
+  `;
 }
 
-function answer(btn) {
-  if (btn.innerText === quizData[current].name) score++;
+function modeSelect(timerChoice){
+  useTimer=timerChoice;
+  app.innerHTML=`
+    <h2>Избери трудност</h2>
+    <button onclick="start('easy')">🟢 Лесни</button>
+    <button onclick="start('medium')">🟡 Трудни</button>
+    <button onclick="start('hard')">🔴 МНОГО ТРУДНИ</button>
+  `;
+}
+
+function start(mode){
+  questions = mode==='easy'?easy:mode==='medium'?medium:hard;
+  current=0;score=0;userAnswers=[];timeLeft=480;
+  if(useTimer) startTimer();
+  load();
+}
+
+function startTimer(){
+  clearInterval(timerId);
+  timerId=setInterval(()=>{
+    let m=Math.floor(timeLeft/60),s=timeLeft%60;
+    let t=document.getElementById("timer");
+    if(t) t.textContent=`⏱️ ${m}:${s.toString().padStart(2,'0')}`;
+    if(timeLeft<=0){clearInterval(timerId);result();}
+    timeLeft--;
+  },1000);
+}
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a}
+
+function load(){
+  let q=questions[current];
+  let opts=shuffle([...q.o]);
+
+  app.innerHTML=`
+    ${useTimer?'<div id="timer"></div>':''}
+    <h3>${q.q}</h3>
+    ${opts.map(o=>`<button onclick="answer('${o}')">${o}</button>`).join('')}
+    <p>${current+1}/60</p>
+  `;
+}
+
+function answer(opt){
+  let correct=questions[current].a;
+  userAnswers.push({q:questions[current].q,user:opt,correct});
+  if(opt===correct) score++;
   current++;
-  loadQuestion();
+  if(current<questions.length) load(); else result();
 }
 
-loadQuestion();
-</script>
+function result(){
+  clearInterval(timerId);
+  let html=`<h2>Край</h2><p>${score}/60</p>`;
+  userAnswers.forEach(x=>{
+    let ok=x.user===x.correct;
+    html+=`<p class='${ok?"correct":"wrong"}'>${x.q}<br>Ти: ${x.user} | Вярно: ${x.correct}</p>`;
+  });
+  html+=`<button onclick="menu()">Назад</button>`;
+  app.innerHTML=html;
+}
 
+menu();
+</script>
 </body>
 </html>
