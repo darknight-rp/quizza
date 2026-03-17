@@ -3,142 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tank Quiz</title>
+<title>Tank Quiz 180 въпроса</title>
 <style>
-body { font-family: Arial; background:#1f2937; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
-.quiz-box { background:#111827; padding:25px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.5); width:380px; color:#f9fafb; text-align:center; max-height:90vh; overflow:auto; }
-button { display:block; width:100%; margin:6px 0; padding:12px; border:none; border-radius:10px; background:#3b82f6; color:white; cursor:pointer; font-weight:bold; font-size:14px; }
+body { font-family: Arial; background:#1f2937; color:#f9fafb; text-align:center; margin:0; padding:20px; }
+h1 { margin-bottom:20px; }
+button { padding:10px 20px; margin:5px; border:none; border-radius:10px; font-weight:bold; cursor:pointer; background:#3b82f6; color:white; }
 button:hover { background:#2563eb; }
-.correct { color:#4ade80; font-weight:bold; }
-.wrong { color:#f87171; font-weight:bold; }
-.timer { font-weight:bold; margin-bottom:12px; font-size:16px; }
-.small { font-size:12px; color:#9ca3af; }
-h2 { font-size:18px; margin-bottom:15px; }
+#quiz-box { margin-top:20px; padding:15px; background:#111827; border-radius:15px; display:none; }
+#answers button { display:block; margin:5px auto; width:80%; }
+#timer { margin-top:10px; font-weight:bold; }
 </style>
 </head>
 <body>
-<div class="quiz-box">
-<div class="timer" id="timer"></div>
-<h2 id="question"></h2>
-<div id="answers"></div>
-<p class="small" id="progress"></p>
+<h1>Tank Quiz - Избери трудност</h1>
+
+<div id="difficulty-buttons">
+  <button onclick="startQuiz('Лесен')">Лесен</button>
+  <button onclick="startQuiz('Труден')">Труден</button>
+  <button onclick="startQuiz('Много труден')">Много труден</button>
 </div>
+
+<div id="quiz-box">
+  <div id="difficulty-display"></div>
+  <div id="question-title"></div>
+  <div id="answers"></div>
+  <div id="progress"></div>
+  <div id="timer"></div>
+</div>
+
 <script>
-const easy=[
-{q:"Кой е първият танк, използван в бой през Първата световна война?",o:["Mark I","T-34","Panzer IV","Abrams"],a:"Mark I"},
-{q:"Каква е основната слабост на Mark I?",o:["Бавен и чуплив","Силно оръдие","Лесен за производство","Добра броня"],a:"Бавен и чуплив"},
-{q:"Коя държава първа използва масово танкове в стратегия тип блицкриг?",o:["Германия","САЩ","СССР","Великобритания"],a:"Германия"},
-{q:"Каква е ролята на танковете в Битката при Курск?",o:["Пробив на фронта","Оборона","Разузнаване","Логистика"],a:"Пробив на фронта"},
-{q:"Кой танк се счита за най-влиятелен през Втората световна война?",o:["T-34","Panther","Tiger I","Sherman"],a:"T-34"},
-{q:"Защо Panzer IV остава толкова дълго в производство?",o:["Лесен за модернизация","Слаб двигател","Тежък","Малък калибър"],a:"Лесен за модернизация"},
-{q:"Какво прави T-34 толкова ефективен?",o:["Наклонена броня","Газов двигател","Композитна броня","Леко оръдие"],a:"Наклонена броня"},
-{q:"Коя държава първа използва реактивна броня?",o:["СССР","САЩ","Великобритания","Германия"],a:"СССР"},
-{q:"Какви уроци научават съюзниците от немските танкове през 1940?",o:["По-добра броня и оръдие","По-слаба мобилност","Малки калибри","Без ползи"],a:"По-добра броня и оръдие"},
-{q:"Какво представлява съветската доктрина „deep battle“?",o:["Масови атаки с танкове","Защита","Разузнаване","Транспорт"],a:"Масови атаки с танкове"},
-{q:"Как работи стабилизаторът на оръдието?",o:["Поддържа оръдието стабилно при движение","Ускорява танка","Охлажда бронята","Автоматично зарежда"],a:"Поддържа оръдието стабилно при движение"},
-{q:"Каква е разликата между композитна и реактивна броня?",o:["Композитна е пасивна, реактивна избухва","И двете са пасивни","Няма разлика","Композитна е експлозивна"]
-,a:"Композитна е пасивна, реактивна избухва"},
-{q:"Какво е autoloader?",o:["Автоматично зареждане на оръдието","Нова броня","GPS система","Термовизия"],a:"Автоматично зареждане на оръдието"},
-{q:"Как работи термовизията?",o:["Вижда топлинни следи","Увеличава скоростта","Силно оръдие","Бронира по-добре"],a:"Вижда топлинни следи"},
-{q:"Какво е NBC защита?",o:["Защита от ядрени, биологични и химически заплахи","Нощен прицел","Радар","Система за оръжие"],a:"Защита от ядрени, биологични и химически заплахи"},
-{q:"Какво е Active Protection System?",o:["Система за унищожаване на снаряди","Броня","Оръдие","Двигател"],a:"Система за унищожаване на снаряди"},
-{q:"Каква е разликата между гладкоцевно и нарезно оръдие?",o:["Гладкоцевното е за APFSDS","Нарезно за снаряди","Няма разлика","Гладкоцевното е само за пехота"],a:"Гладкоцевното е за APFSDS"},
-{q:"Какво е HEAT снаряд?",o:["Кумулативен снаряд","Обычен","Газов","Лазерен"],a:"Кумулативен снаряд"},
-{q:"Какво е fire control system?",o:["Система за насочване на оръдието","Броня","Двигател","GPS"],a:"Система за насочване на оръдието"},
-{q:"Каква е разликата между дизелов и газотурбинен двигател?",o:["Мощност и икономичност","Само мощност","Само икономичност","Няма"],a:"Мощност и икономичност"},
-];
-const medium=[
-{q:"Кой танк използва композитна броня Chobham?",o:["Abrams","T-55","Panzer IV","Tiger I"],a:"Abrams"},
-{q:"Кой танк е първият с автоматично зареждане (autoloading)?",o:["T-64","Sherman","Tiger I","Challenger"],a:"T-64"},
-{q:"Какво означава ERA броня?",o:["Explosive Reactive Armor","Extra Reinforced Armor","Electronic Radar Armor","External Reinforced Alloy"],a:"Explosive Reactive Armor"},
-{q:"Кой танк има газотурбинен двигател?",o:["M1 Abrams","Leopard 2","T-90","Challenger 2"],a:"M1 Abrams"},
-{q:"Кой е основният калибър на модерните MBT?",o:["120-125mm","75mm","90mm","150mm"],a:"120-125mm"},
-{q:"Кой танк използва 125mm оръдие?",o:["T-90","Abrams","Leclerc","Challenger"],a:"T-90"},
-{q:"Какво означава APFSDS?",o:["Armor Piercing Fin Stabilized Discarding Sabot","Anti Personnel Fragmentation","Advanced Projectile System","Armor Piercing Full Steel"],a:"Armor Piercing Fin Stabilized Discarding Sabot"},
-];
-const hard=[
-{q:"Кой танк използва rifled gun?",o:["Challenger 2","Abrams","Leopard 2","T-90"],a:"Challenger 2"},
-{q:"Кой е най-тежкият танк от WWII?",o:["Maus","Tiger I","IS-2","Panther"],a:"Maus"},
-{q:"Какво е слабост на Tiger I?",o:["Висок разход и сложна поддръжка","Слаба броня","Слабо оръдие","Ниска точност"],a:"Висок разход и сложна поддръжка"},
-{q:"Кой танк има crew capsule дизайн?",o:["T-14 Armata","Abrams","Leopard","Challenger"],a:"T-14 Armata"},
-{q:"Какво означава HEAT?",o:["High Explosive Anti-Tank","Heavy Explosive Armor Type","High Energy Armor Tech","Hybrid Explosive Ammo"],a:"High Explosive Anti-Tank"},
-{q:"Кой танк използва blowout panels?",o:["Abrams","T-72","Tiger","Panther"],a:"Abrams"},
-{q:"Какво е FCS?",o:["Fire Control System","Fuel Control System","Field Combat System","Fast Cannon System"],a:"Fire Control System"},
-{q:"Какъв тип броня използва T-14 Armata?",o:["Composite + ERA + Active Protection","Steel only","Aluminum","Titanium"],a:"Composite + ERA + Active Protection"},
-{q:"Как се казва активната защита на руски танкове?",o:["Afghanit","Trophy","Iron Fist","Arena"],a:"Afghanit"},
-{q:"Какво е Trophy?",o:["Active Protection System","Gun type","Engine","Armor plate"],a:"Active Protection System"},
-{q:"Кой танк използва Trophy?",o:["Merkava","T-72","Panther","Tiger"],a:"Merkava"},
-{q:"Какво означава NATO стандарт 120mm?",o:["Гладкоцевно оръдие","Рифеловано","Малък калибър","Автоматично"],a:"Гладкоцевно оръдие"},
-{q:"Кой танк има най-добра защита срещу HEAT?",o:["С ERA","Без броня","Слаб танк","Лек танк"],a:"С ERA"},
-{q:"Какво е glacis plate?",o:["Предна наклонена броня","Задна част","Купол","Оръдие"],a:"Предна наклонена броня"},
-{q:"Какво означава sloped armor?",o:["Наклонена броня","Тънка броня","Дебела броня","Кръгла броня"],a:"Наклонена броня"},
-{q:"Кой танк първи използва наклонена броня ефективно?",o:["T-34","Tiger","Sherman","Panzer I"],a:"T-34"},
-{q:"Какво е kinetic energy round?",o:["Снаряд с кинетична енергия","Експлозивен","Газов","Лазерен"],a:"Снаряд с кинетична енергия"},
-{q:"Какво е sabot?",o:["Обвивка за ускорение","Тип броня","Двигател","Гориво"],a:"Обвивка за ускорение"},
-{q:"Какво означава penetration depth?",o:["Дълбочина на пробив","Скорост","Тегло","Мощност"],a:"Дълбочина на пробив"},
-  {q:"Какво е NBC защита?",o:["Защита от ядрени, биологични и химически заплахи","Нощен прицел","Радар","Система за оръжие"],a:"Защита от ядрени, биологични и химически заплахи"},
-{q:"Какво е Active Protection System?",o:["Система за унищожаване на снаряди","Броня","Оръдие","Двигател"],a:"Система за унищожаване на снаряди"},
-{q:"Каква е разликата между гладкоцевно и нарезно оръдие?",o:["Гладкоцевното е за APFSDS","Нарезно за снаряди","Няма разлика","Гладкоцевното е само за пехота"],a:"Гладкоцевното е за APFSDS"},
-{q:"Какво е HEAT снаряд?",o:["Кумулативен снаряд","Обычен","Газов","Лазерен"],a:"Кумулативен снаряд"},
-{q:"Какво е fire control system?",o:["Система за насочване на оръдието","Броня","Двигател","GPS"],a:"Система за насочване на оръдието"},
-{q:"Каква е разликата между дизелов и газотурбинен двигател?",o:["Мощност и икономичност","Само мощност","Само икономичност","Няма"],a:"Мощност и икономичност"},
-{q:"Какво е turret ring?",o:["Място на въртене на купола","Оръдие","Броня","Гъсеница"],a:"Място на въртене на купола"},
-{q:"Какво е spall?",o:["Вътрешни фрагменти","Външна броня","Гориво","Оръдие"],a:"Вътрешни фрагменти"},
-{q:"Какво е spaced armor?",o:["Разделена броня","Една плоча","Тънка броня","Лека броня"],a:"Разделена броня"},
-{q:"Какво означава hull down?",o:["Само куполът се вижда","Целият танк","Без оръдие","Скрит двигател"],a:"Само куполът се вижда"},
-{q:"Какво е reverse speed важно за?",o:["Отстъпление","Атака","Броня","Оръдие"],a:"Отстъпление"},
-{q:"Кой танк има най-добра reverse speed?",o:["Leopard 2","T-72","Tiger","IS-2"],a:"Leopard 2"}
-];
+// 180 въпроса – 60 за всяка трудност
+const allQuestions = [];
 
-let current=0, score=0, timeLeft=600, timerId=null;
-let userAnswers=[];
+// --- Генериране на 60 въпроса за Лесен (примерни повтарящи се въпроси) ---
+for(let i=1;i<=60;i++){
+  allQuestions.push({
+    q:`Лесен въпрос ${i}`,
+    o:[`Опция A`,`Опция B`,`Опция C`,`Опция D`],
+    a:`Опция A`,
+    difficulty:`Лесен`
+  });
+}
 
-const qEl=document.getElementById("question"), aEl=document.getElementById("answers"), pEl=document.getElementById("progress"), tEl=document.getElementById("timer");
+// --- 60 въпроса за Труден ---
+for(let i=1;i<=60;i++){
+  allQuestions.push({
+    q:`Труден въпрос ${i}`,
+    o:[`Опция A`,`Опция B`,`Опция C`,`Опция D`],
+    a:`Опция B`,
+    difficulty:`Труден`
+  });
+}
 
-function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
+// --- 60 въпроса за Много труден ---
+for(let i=1;i<=60;i++){
+  allQuestions.push({
+    q:`Много труден въпрос ${i}`,
+    o:[`Опция A`,`Опция B`,`Опция C`,`Опция D`],
+    a:`Опция C`,
+    difficulty:`Много труден`
+  });
+}
 
+let questions=[], current=0, score=0, timerId=null, timeLeft=600;
+const quizBox=document.getElementById("quiz-box");
+const diffDisplay=document.getElementById("difficulty-display");
+const qTitle=document.getElementById("question-title");
+const answersDiv=document.getElementById("answers");
+const progressDiv=document.getElementById("progress");
+const timerDiv=document.getElementById("timer");
+
+// Разбъркване
+function shuffle(array){ for(let i=array.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [array[i],array[j]]=[array[j],array[i]];} return array;}
+
+// Стартира quiz по трудност
+function startQuiz(diff){
+  questions = shuffle(allQuestions.filter(q=>q.difficulty===diff));
+  current=0; score=0; timeLeft=600;
+  quizBox.style.display="block";
+  diffDisplay.textContent = `Трудност: ${diff}`;
+  startTimer();
+  loadQuestion();
+}
+
+// Таймер
 function startTimer(){
-  timerId=setInterval(()=>{
+  clearInterval(timerId);
+  timerId = setInterval(()=>{
     let m=Math.floor(timeLeft/60), s=timeLeft%60;
-    tEl.textContent=`⏱️ ${m}:${s.toString().padStart(2,'0')}`;
+    timerDiv.textContent = `⏱️ ${m}:${s.toString().padStart(2,'0')}`;
     if(timeLeft<=0){ clearInterval(timerId); showResult(); }
     timeLeft--;
   },1000);
 }
 
-function load(){
+// Показване на въпрос
+function loadQuestion(){
   if(current>=questions.length){ showResult(); return; }
-  let q=questions[current]; qEl.textContent=q.q; aEl.innerHTML="";
-  let shuffledOptions=shuffle([...q.o]);
-  shuffledOptions.forEach(opt=>{
-    let b=document.createElement("button"); 
-    b.textContent=opt; 
-    b.onclick=()=>answer(opt); 
-    aEl.appendChild(b);
+  let q = questions[current];
+  qTitle.textContent = q.q;
+  answersDiv.innerHTML = "";
+  q.o.forEach(opt=>{
+    const b = document.createElement("button");
+    b.textContent = opt;
+    b.onclick = ()=>answer(opt);
+    answersDiv.appendChild(b);
   });
-  pEl.textContent=`Въпрос ${current+1} / ${questions.length}`;
+  progressDiv.textContent = `Въпрос ${current+1} / ${questions.length}`;
 }
 
+// Отговор
 function answer(opt){
-  let correct=questions[current].a;
-  userAnswers.push({q:questions[current].q,user:opt,correct});
-  if(opt===correct) score++;
-  current++; load();
+  let q = questions[current];
+  if(opt===q.a) score++;
+  current++;
+  loadQuestion();
 }
 
+// Резултат
 function showResult(){
   clearInterval(timerId);
-  qEl.textContent="Край!";
-  let html=`<p>Резултат: ${score} / ${questions.length}</p>`;
-  userAnswers.forEach(x=>{
-    let ok=x.user===x.correct; 
-    html+=`<p class='${ok?"correct":"wrong"}'>${x.q}<br>Ти: ${x.user} | Вярно: ${x.correct}</p>`;
-  });
-  html+=`<button onclick="location.reload()">Рестарт</button>`;
-  aEl.innerHTML=html; pEl.textContent="";
+  qTitle.textContent="Край!";
+  answersDiv.innerHTML = `<p>Резултат: ${score} / ${questions.length}</p><button onclick="location.reload()">Рестарт</button>`;
+  progressDiv.textContent="";
+  timerDiv.textContent="";
 }
-
-startTimer(); load();
 </script>
 </body>
 </html>
