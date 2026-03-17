@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tank Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-box {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 15px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .small {
+      margin-top: 10px;
+      font-size: 12px;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-box">
+    <h2 id="question"></h2>
+    <div id="answers"></div>
+    <p class="small" id="progress"></p>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Коя държава създава T-34?",
+        options: ["Германия", "САЩ", "СССР", "Великобритания"],
+        answer: "СССР"
+      },
+      {
+        question: "Какво означава MBT?",
+        options: ["Main Battle Tank", "Mega Battle Tank", "Modern Battle Tank", "Mobile Battle Tank"],
+        answer: "Main Battle Tank"
+      },
+      {
+        question: "Кой танк е немски от ВСВ?",
+        options: ["Sherman", "Tiger I", "T-90", "Challenger"],
+        answer: "Tiger I"
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const progressEl = document.getElementById("progress");
+
+    function loadQuestion() {
+      const q = questions[current];
+      questionEl.textContent = q.question;
+      answersEl.innerHTML = "";
+
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.onclick = () => selectAnswer(option);
+        answersEl.appendChild(btn);
+      });
+
+      progressEl.textContent = `Въпрос ${current + 1} от ${questions.length}`;
+    }
+
+    function selectAnswer(option) {
+      if (option === questions[current].answer) {
+        score++;
+      }
+
+      current++;
+
+      if (current < questions.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      questionEl.textContent = "Край!";
+      answersEl.innerHTML = `<p>Твоят резултат: ${score} / ${questions.length}</p>
+        <button onclick="location.reload()">Рестарт</button>`;
+      progressEl.textContent = "";
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
