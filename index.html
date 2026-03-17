@@ -25,41 +25,41 @@
 
 <script>
 const questions = [
-  {q:"T-34 е от?",o:["Germany","USSR","USA","UK"],a:"USSR"},
-  {q:"MBT означава?",o:["Main Battle Tank","Mega Tank","Modern Tank","Mobile Tank"],a:"Main Battle Tank"},
-  {q:"Tiger I е?",o:["German","USA","UK","Russia"],a:"German"},
-  {q:"Abrams е от?",o:["USA","Germany","Russia","UK"],a:"USA"},
-  {q:"Leopard 2 е от?",o:["Germany","France","USA","Italy"],a:"Germany"},
-  {q:"T-90 е от?",o:["Russia","USA","China","UK"],a:"Russia"},
-  {q:"Challenger 2 е?",o:["UK","USA","France","Germany"],a:"UK"},
-  {q:"Leclerc е от?",o:["France","Germany","Italy","Spain"],a:"France"},
-  {q:"Merkava е от?",o:["Israel","USA","Germany","France"],a:"Israel"},
-  {q:"Type 99 е от?",o:["China","Japan","USA","Russia"],a:"China"},
-  {q:"Panther е?",o:["German","USA","UK","Russia"],a:"German"},
-  {q:"Sherman е от?",o:["USA","Germany","Russia","Japan"],a:"USA"},
-  {q:"Tiger II е?",o:["German","USA","UK","France"],a:"German"},
-  {q:"T-14 Armata е от?",o:["Russia","USA","China","UK"],a:"Russia"},
-  {q:"Gas turbine tank?",o:["Abrams","T-72","Leopard","Challenger"],a:"Abrams"},
-  {q:"British tank?",o:["Challenger","Abrams","Leopard","T-72"],a:"Challenger"},
-  {q:"French tank?",o:["Leclerc","Abrams","Merkava","T-90"],a:"Leclerc"},
-  {q:"Russian tank?",o:["T-72","Abrams","Leopard","Challenger"],a:"T-72"},
-  {q:"German tank?",o:["Leopard","Abrams","T-90","Merkava"],a:"Leopard"},
-  {q:"Israeli tank?",o:["Merkava","T-72","Leopard","Abrams"],a:"Merkava"},
-  {q:"USA tank?",o:["Abrams","T-90","Leclerc","Type 99"],a:"Abrams"},
-  {q:"WW2 US tank?",o:["Sherman","Tiger","T-34","Panther"],a:"Sherman"},
-  {q:"WW2 USSR tank?",o:["T-34","Tiger","Sherman","Panther"],a:"T-34"},
-  {q:"WW2 German tank?",o:["Panther","Sherman","T-34","Abrams"],a:"Panther"},
-  {q:"Modern Russian tank?",o:["T-90","Tiger","Sherman","Panther"],a:"T-90"},
-  {q:"Modern US tank?",o:["Abrams","Tiger","T-34","Panther"],a:"Abrams"},
-  {q:"Modern German tank?",o:["Leopard 2","Tiger","T-34","Sherman"],a:"Leopard 2"},
-  {q:"Modern UK tank?",o:["Challenger 2","Tiger","Abrams","T-90"],a:"Challenger 2"},
-  {q:"Modern French tank?",o:["Leclerc","Abrams","T-90","Leopard"],a:"Leclerc"},
-  {q:"Asian tank?",o:["Type 99","Abrams","Leopard","Challenger"],a:"Type 99"},
-  {q:"Heavy German tank?",o:["Tiger","Sherman","T-34","Abrams"],a:"Tiger"},
-  {q:"Fast tank WW2?",o:["T-34","Tiger","Leopard","Abrams"],a:"T-34"},
-  {q:"Cold war tank?",o:["T-72","Tiger","Panther","Sherman"],a:"T-72"},
-  {q:"Advanced Russian tank?",o:["Armata","Tiger","Sherman","Leopard"],a:"Armata"},
-  {q:"Best known US tank?",o:["Abrams","Tiger","T-34","Leopard"],a:"Abrams"}
+  {q:"Кой танк използва композитна броня Chobham?",o:["Abrams","T-55","Panzer IV","Tiger I"],a:"Abrams"},
+  {q:"Кой танк е първият с автоматично зареждане (autoloading)?",o:["T-64","Sherman","Tiger I","Challenger"],a:"T-64"},
+  {q:"Какво означава ERA броня?",o:["Explosive Reactive Armor","Extra Reinforced Armor","Electronic Radar Armor","External Reinforced Alloy"],a:"Explosive Reactive Armor"},
+  {q:"Кой танк има газотурбинен двигател?",o:["M1 Abrams","Leopard 2","T-90","Challenger 2"],a:"M1 Abrams"},
+  {q:"Кой е основният калибър на модерните MBT?",o:["120-125mm","75mm","90mm","150mm"],a:"120-125mm"},
+  {q:"Кой танк използва 125mm оръдие?",o:["T-90","Abrams","Leclerc","Challenger"],a:"T-90"},
+  {q:"Кой танк е известен с изключително точна система за управление на огъня?",o:["Leopard 2","T-55","Panther","Sherman"],a:"Leopard 2"},
+  {q:"Коя държава разработва Merkava?",o:["Israel","USA","Germany","France"],a:"Israel"},
+  {q:"Какво е основното предимство на Merkava?",o:["Преден двигател за защита","По-голямо оръдие","По-висока скорост","По-малко тегло"],a:"Преден двигател за защита"},
+  {q:"Кой танк е първият с многослойна броня?",o:["T-64","Tiger","Sherman","Panther"],a:"T-64"},
+  {q:"Какво означава APFSDS?",o:["Armor Piercing Fin Stabilized Discarding Sabot","Anti Personnel Fragmentation","Advanced Projectile System","Armor Piercing Full Steel"],a:"Armor Piercing Fin Stabilized Discarding Sabot"},
+  {q:"Кой танк използва rifled gun?",o:["Challenger 2","Abrams","Leopard 2","T-90"],a:"Challenger 2"},
+  {q:"Кой е най-тежкият танк от WWII?",o:["Maus","Tiger I","IS-2","Panther"],a:"Maus"},
+  {q:"Какво е слабост на Tiger I?",o:["Висок разход и сложна поддръжка","Слаба броня","Слабо оръдие","Ниска точност"],a:"Висок разход и сложна поддръжка"},
+  {q:"Кой танк е известен със своята мобилност и наклонена броня?",o:["T-34","Tiger","Sherman","Maus"],a:"T-34"},
+  {q:"Какво е FCS?",o:["Fire Control System","Fuel Control System","Field Combat System","Fast Cannon System"],a:"Fire Control System"},
+  {q:"Кой танк има crew capsule дизайн?",o:["T-14 Armata","Abrams","Leopard","Challenger"],a:"T-14 Armata"},
+  {q:"Коя държава създава Leopard 2?",o:["Germany","France","USA","Italy"],a:"Germany"},
+  {q:"Какво е основното предназначение на MBT?",o:["Универсална бойна роля","Само защита","Само атака","Разузнаване"],a:"Универсална бойна роля"},
+  {q:"Кой танк има най-добра защита на екипажа?",o:["T-14 Armata","T-55","Panther","Sherman"],a:"T-14 Armata"},
+  {q:"Какво означава HEAT?",o:["High Explosive Anti-Tank","Heavy Explosive Armor Type","High Energy Armor Tech","Hybrid Explosive Ammo"],a:"High Explosive Anti-Tank"},
+  {q:"Кой танк използва blowout panels?",o:["Abrams","T-72","Tiger","Panther"],a:"Abrams"},
+  {q:"Кой е най-важният фактор за оцеляване на танк?",o:["Комбинация от броня, мобилност и огнева мощ","Само броня","Само оръдие","Само скорост"],a:"Комбинация от броня, мобилност и огнева мощ"},
+  {q:"Какво е weak spot при танковете?",o:["Задната броня","Куполът","Оръдието","Гъсениците"],a:"Задната броня"},
+  {q:"Кой танк е модерен руски?",o:["T-90","Tiger","Sherman","Panther"],a:"T-90"},
+  {q:"Кой танк има най-добра електроника?",o:["Leopard 2","T-55","Tiger","IS-2"],a:"Leopard 2"},
+  {q:"Какво е reload time?",o:["Време за презареждане","Време за движение","Време за стрелба","Време за завой"],a:"Време за презареждане"},
+  {q:"Кой танк има autoloader?",o:["T-72","Abrams","Challenger","Leopard"],a:"T-72"},
+  {q:"Кой танк е британски?",o:["Challenger 2","Abrams","T-90","Leopard"],a:"Challenger 2"},
+  {q:"Кой танк е френски?",o:["Leclerc","Abrams","T-90","Leopard"],a:"Leclerc"},
+  {q:"Кой танк е китайски?",o:["Type 99","Abrams","Leopard","Challenger"],a:"Type 99"},
+  {q:"Кой танк е израелски?",o:["Merkava","Abrams","Leopard","T-90"],a:"Merkava"},
+  {q:"Какво е penetration?",o:["Пробивна способност","Скорост","Тегло","Броня"],a:"Пробивна способност"},
+  {q:"Кой танк е най-модерен руски?",o:["T-14 Armata","T-34","T-55","IS-2"],a:"T-14 Armata"},
+  {q:"Какво е armor thickness?",o:["Дебелина на бронята","Скорост","Мощност","Тегло"],a:"Дебелина на бронята"}
 ];
 
 let current=0, score=0, timeLeft=360;
@@ -79,16 +79,28 @@ function timer(){
 }
 setInterval(timer,1000);
 
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 function load(){
   let q=questions[current];
   qEl.textContent=q.q;
   aEl.innerHTML="";
-  q.o.forEach(opt=>{
+
+  let shuffledOptions = shuffle([...q.o]);
+
+  shuffledOptions.forEach(opt=>{
     let b=document.createElement("button");
     b.textContent=opt;
     b.onclick=()=>answer(opt);
     aEl.appendChild(b);
   });
+
   pEl.textContent=`Въпрос ${current+1} / ${questions.length}`;
 }
 
